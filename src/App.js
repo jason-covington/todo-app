@@ -1,34 +1,62 @@
 import * as React from 'react'
-import ReactDOM from 'react-dom'
+import { Button, TextField } from '@material-ui/core'
 
-const App = () => {
+export const App = () => {
     const [todos, setTodos] = React.useState([])
-    const [todoName, setTodoName] = React.useState('')
+    const [name, setName] = React.useState('')
 
-    const handleAddTodo = () => {}
+    const handleFormSubmit = (e) => {
+        e.preventDefault()
+        if (!Boolean(name)) {
+            return
+        }
+        const newTodo = { name, key: Date.now() }
+        setName('')
+        setTodos([...todos, newTodo])
+    }
+
+    const handleDeleteTodo = (key) => {
+        setTodos(todos.filter((todo) => todo.key !== key))
+    }
 
     return (
         <div>
-            <h1>Todo</h1>
-            <div>
-                <input
+            <h1>Todo List</h1>
+            <form onSubmit={handleFormSubmit}>
+                <TextField
+                    id="todoText"
+                    label="Add a todo"
                     type="text"
-                    placeholder="Enter a todo..."
-                    onChange={(e) => setTodoName({ name: e.target.value })}
+                    value={name}
+                    variant="outlined"
+                    placeholder="Todo..."
+                    onChange={(e) => setName(e.target.value)}
                 />
-                <button onClick={() => setTodos([...todos, todoName])}>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    size="large"
+                    type="submit"
+                >
                     Add
-                </button>
-            </div>
+                </Button>
+            </form>
             <div>
-                <ul>
-                    {todos.map((todo) => (
-                        <li>{todo.name}</li>
-                    ))}
-                </ul>
+                {Boolean(todos.length) ? (
+                    <ul>
+                        {todos.map(({ key, name }) => (
+                            <li key={key}>
+                                {name}{' '}
+                                <button onClick={() => handleDeleteTodo(key)}>
+                                    delete
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
+                ) : (
+                    <div>Please enter a todo!</div>
+                )}
             </div>
         </div>
     )
 }
-
-ReactDOM.render(<App />, document.getElementById('root'))
