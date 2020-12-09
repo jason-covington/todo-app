@@ -15,6 +15,8 @@ import { Todos } from './components/Todos'
 export const App = () => {
     const [todos, setTodos] = React.useState([])
     const [name, setName] = React.useState('')
+    const completedTodos = todos.filter((todo) => todo.completed)
+    const uncompletedTodos = todos.filter((todo) => !todo.completed)
 
     const handleFormSubmit = (e) => {
         e.preventDefault()
@@ -30,64 +32,81 @@ export const App = () => {
         setTodos(todos.filter((todo) => todo.key !== key))
     }
 
-    const completedTodos = todos.filter((todo) => todo.completed)
+    const handleCompleteTodo = (key) => {
+        const updatedTodos = todos.map((todo) => {
+            if (todo.key === key) {
+                todo.completed = true
+            }
+            return todo
+        })
+        setTodos(updatedTodos)
+    }
 
     return (
         <Container maxWidth="sm">
-            <Heading>Todo List</Heading>
-            <Card>
-                <CardContent>
-                    <form onSubmit={handleFormSubmit}>
-                        <FormControl fullWidth>
-                            <TextField
-                                id="todoText"
-                                label="Add a todo"
-                                type="text"
-                                value={name}
-                                variant="outlined"
-                                placeholder="Todo..."
-                                onChange={(e) => setName(e.target.value)}
-                                InputProps={{
-                                    endAdornment: (
-                                        <Button
-                                            variant="contained"
-                                            color="primary"
-                                            size="large"
-                                            type="submit"
-                                        >
-                                            Add
-                                        </Button>
-                                    ),
-                                }}
-                            />
-                        </FormControl>
-                    </form>
-                </CardContent>
-            </Card>
-            <Box mt={2}>
-                <Card>
-                    <CardContent>
-                        {Boolean(todos.length) ? (
-                            <Todos
-                                todos={todos}
-                                handleDeleteTodo={handleDeleteTodo}
-                            />
-                        ) : (
-                            <h2>Please enter a todo!</h2>
-                        )}
-                    </CardContent>
-                </Card>
-            </Box>
+            <Heading>To-do List</Heading>
+            <StyledCard>
+                <form onSubmit={handleFormSubmit}>
+                    <FormControl fullWidth>
+                        <TextField
+                            id="todoText"
+                            label="Add a to-do"
+                            type="text"
+                            value={name}
+                            variant="outlined"
+                            onChange={(e) => setName(e.target.value)}
+                            InputProps={{
+                                endAdornment: (
+                                    <Button
+                                        variant="contained"
+                                        color="primary"
+                                        size="large"
+                                        type="submit"
+                                    >
+                                        Add
+                                    </Button>
+                                ),
+                            }}
+                        />
+                    </FormControl>
+                </form>
+            </StyledCard>
+            <StyledCard>
+                {Boolean(uncompletedTodos.length) ? (
+                    <Todos
+                        todos={uncompletedTodos}
+                        handleDeleteTodo={handleDeleteTodo}
+                        handleCompleteTodo={handleCompleteTodo}
+                    />
+                ) : (
+                    <NoTodosText>
+                        You're all caught up, or you need something to do!
+                    </NoTodosText>
+                )}
+            </StyledCard>
             {Boolean(completedTodos.length) && (
-                <Todos
-                    todos={completedTodos}
-                    handleDeleteTodo={handleDeleteTodo}
-                />
+                <StyledCard>
+                    <Todos
+                        todos={completedTodos}
+                        handleDeleteTodo={handleDeleteTodo}
+                    />
+                </StyledCard>
             )}
         </Container>
     )
 }
 
+const StyledCard = styled(Card)`
+    padding: 16px;
+    margin-bottom: 16px;
+`
+
 const Heading = styled.h1`
+    text-align: center;
+`
+
+const NoTodosText = styled.div`
+    font-size: 18px;
+    font-weight: bold;
     text-align: center;
 `

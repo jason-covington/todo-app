@@ -9,15 +9,27 @@ import {
     ListItemText,
 } from '@material-ui/core'
 
-export const Todos = ({ todos, handleDeleteTodo }) => {
+import styled from 'styled-components'
+
+export const Todos = ({ todos, handleDeleteTodo, handleCompleteTodo }) => {
     return (
         <List>
-            {todos.map(({ key, name, completed }) => (
+            {todos.map(({ name, key, completed }) => (
                 <ListItem button key={key}>
-                    <ListItemIcon>
-                        <Checkbox edge="start" checked={completed} />
-                    </ListItemIcon>
-                    <ListItemText primary={name}>{name}</ListItemText>
+                    {!completed && (
+                        <ListItemIcon>
+                            <Checkbox
+                                edge="start"
+                                checked={completed}
+                                onClick={() => handleCompleteTodo(key)}
+                            />
+                        </ListItemIcon>
+                    )}
+                    {completed ? (
+                        <CompletedText primary={name} />
+                    ) : (
+                        <ListItemText primary={name} />
+                    )}
                     <ListItemSecondaryAction>
                         <Button
                             variant="outlined"
@@ -31,3 +43,7 @@ export const Todos = ({ todos, handleDeleteTodo }) => {
         </List>
     )
 }
+
+const CompletedText = styled(ListItemText)`
+    text-decoration: line-through;
+`
