@@ -8,32 +8,35 @@ describe('<App />', () => {
     test('the app renders required elements', () => {
         render(<App />)
         screen.getByRole('button', { name: /add/i })
-        screen.getByLabelText(/add a todo/i)
+        screen.getByLabelText(/add a to-do/i)
     })
 
-    test('the app should allow the user to add a todo', () => {
+    test('the app should allow the user to add a to-do', () => {
         render(<App />)
-        userEvent.type(screen.getByLabelText(/add a todo/i), `new todo{enter}`)
-        expect(screen.getByLabelText(/add a todo/i)).toHaveValue('')
-        screen.getByText(/new todo/i)
+        userEvent.type(
+            screen.getByLabelText(/add a to-do/i),
+            `new to-do{enter}`
+        )
+        expect(screen.getByLabelText(/add a to-do/i)).toHaveValue('')
+        screen.getByText(/new to-do/i)
     })
 
-    test('the app allows multiple todos to be added', () => {
+    test('the app allows multiple to-dos to be added', () => {
         render(<App />)
-        const input = screen.getByLabelText(/add a todo/i)
+        const input = screen.getByLabelText(/add a to-do/i)
 
-        userEvent.type(input, `new todo 1{enter}`)
-        userEvent.type(input, `new todo 2{enter}`)
+        userEvent.type(input, `new to-do 1{enter}`)
+        userEvent.type(input, `new to-do 2{enter}`)
 
         expect(screen.queryAllByRole('listitem').length).toBe(2)
     })
 
-    test('the app allows todos to be deleted', () => {
+    test('the app allows to-dos to be deleted', () => {
         render(<App />)
-        const input = screen.getByLabelText(/add a todo/i)
+        const input = screen.getByLabelText(/add a to-do/i)
 
-        userEvent.type(input, `new todo 1{enter}`)
-        userEvent.type(input, `new todo 2{enter}`)
+        userEvent.type(input, `new to-do 1{enter}`)
+        userEvent.type(input, `new to-do 2{enter}`)
 
         expect(screen.queryAllByRole('listitem').length).toBe(2)
         const firstItemDeleteButton = screen.queryAllByRole('button', {
@@ -44,9 +47,9 @@ describe('<App />', () => {
         expect(screen.queryAllByRole('listitem').length).toBe(1)
     })
 
-    test('the app should not allow a blank todo', () => {
+    test('the app should not allow a blank to-do', () => {
         render(<App />)
-        userEvent.type(screen.getByLabelText(/add a todo/i), `{enter}`)
+        userEvent.type(screen.getByLabelText(/add a to-do/i), `{enter}`)
         expect(screen.queryByRole('listitem')).toBeNull()
     })
 })
