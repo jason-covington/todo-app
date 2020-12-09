@@ -24,9 +24,8 @@ describe('<App />', () => {
 
         userEvent.type(input, `new todo 1{enter}`)
         userEvent.type(input, `new todo 2{enter}`)
-        userEvent.type(input, `new todo 3{enter}`)
 
-        expect(screen.queryAllByRole('listitem').length).toBe(3)
+        expect(screen.queryAllByRole('listitem').length).toBe(2)
     })
 
     test('the app allows todos to be deleted', () => {
@@ -35,15 +34,14 @@ describe('<App />', () => {
 
         userEvent.type(input, `new todo 1{enter}`)
         userEvent.type(input, `new todo 2{enter}`)
-        userEvent.type(input, `new todo 3{enter}`)
 
-        expect(screen.queryAllByRole('listitem').length).toBe(3)
+        expect(screen.queryAllByRole('listitem').length).toBe(2)
         const firstItemDeleteButton = screen.queryAllByRole('button', {
             name: /delete/i,
         })[0]
         userEvent.click(firstItemDeleteButton)
 
-        expect(screen.queryAllByRole('listitem').length).toBe(2)
+        expect(screen.queryAllByRole('listitem').length).toBe(1)
     })
 
     test('the app should not allow a blank todo', () => {

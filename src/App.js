@@ -1,5 +1,16 @@
 import * as React from 'react'
-import { Button, TextField } from '@material-ui/core'
+import {
+    Box,
+    Button,
+    Card,
+    CardContent,
+    Container,
+    FormControl,
+    TextField,
+} from '@material-ui/core'
+import styled from 'styled-components'
+
+import { Todos } from './components/Todos'
 
 export const App = () => {
     const [todos, setTodos] = React.useState([])
@@ -10,7 +21,7 @@ export const App = () => {
         if (!Boolean(name)) {
             return
         }
-        const newTodo = { name, key: Date.now() }
+        const newTodo = { name, key: Date.now(), completed: false }
         setName('')
         setTodos([...todos, newTodo])
     }
@@ -19,44 +30,64 @@ export const App = () => {
         setTodos(todos.filter((todo) => todo.key !== key))
     }
 
+    const completedTodos = todos.filter((todo) => todo.completed)
+
     return (
-        <div>
-            <h1>Todo List</h1>
-            <form onSubmit={handleFormSubmit}>
-                <TextField
-                    id="todoText"
-                    label="Add a todo"
-                    type="text"
-                    value={name}
-                    variant="outlined"
-                    placeholder="Todo..."
-                    onChange={(e) => setName(e.target.value)}
+        <Container maxWidth="sm">
+            <Heading>Todo List</Heading>
+            <Card>
+                <CardContent>
+                    <form onSubmit={handleFormSubmit}>
+                        <FormControl fullWidth>
+                            <TextField
+                                id="todoText"
+                                label="Add a todo"
+                                type="text"
+                                value={name}
+                                variant="outlined"
+                                placeholder="Todo..."
+                                onChange={(e) => setName(e.target.value)}
+                                InputProps={{
+                                    endAdornment: (
+                                        <Button
+                                            variant="contained"
+                                            color="primary"
+                                            size="large"
+                                            type="submit"
+                                        >
+                                            Add
+                                        </Button>
+                                    ),
+                                }}
+                            />
+                        </FormControl>
+                    </form>
+                </CardContent>
+            </Card>
+            <Box mt={2}>
+                <Card>
+                    <CardContent>
+                        {Boolean(todos.length) ? (
+                            <Todos
+                                todos={todos}
+                                handleDeleteTodo={handleDeleteTodo}
+                            />
+                        ) : (
+                            <h2>Please enter a todo!</h2>
+                        )}
+                    </CardContent>
+                </Card>
+            </Box>
+            {Boolean(completedTodos.length) && (
+                <Todos
+                    todos={completedTodos}
+                    handleDeleteTodo={handleDeleteTodo}
                 />
-                <Button
-                    variant="contained"
-                    color="primary"
-                    size="large"
-                    type="submit"
-                >
-                    Add
-                </Button>
-            </form>
-            <div>
-                {Boolean(todos.length) ? (
-                    <ul>
-                        {todos.map(({ key, name }) => (
-                            <li key={key}>
-                                {name}{' '}
-                                <button onClick={() => handleDeleteTodo(key)}>
-                                    delete
-                                </button>
-                            </li>
-                        ))}
-                    </ul>
-                ) : (
-                    <div>Please enter a todo!</div>
-                )}
-            </div>
-        </div>
+            )}
+        </Container>
     )
 }
+
+const Heading = styled.h1`
+    text-align: center;
+`
